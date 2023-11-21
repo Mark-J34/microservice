@@ -13,3 +13,5 @@ Wood Sword
 
 How to Receive Data
 The microservice processes the input.txt file and writes the lookup results to output.json. The output includes detailed information about each requested item. If an item is not found, a failure message is recorded for that specific entry.
+
+![UML Sequence Diagram](/UML.png)
