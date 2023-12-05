@@ -1,23 +1,22 @@
 const fs = require('fs');
 const items = require('./weaponData');
 
+// Initialize an empty results array outside of the fs.watch callback
+let results = [];
+
 // Function to find an item by id or numerical_id
 function findItem(searchTerm) {
   let result;
+
   // Check if searchTerm is a number
   if (!isNaN(searchTerm)) {
     result = items.find(item => item.numerical_id === parseInt(searchTerm, 10));
   } else {
-    // If searchTerm is not a number, search by id
-    result = items.find(item => item.id === searchTerm);
+    // If searchTerm is not a number, search by type
+    result = items.filter(item => item.type === searchTerm);
   }
 
-  // If no item is found, return an object indicating failure
-  if (!result) {
-    return { success: "failure" };
-  }
-
-  return result;
+  return result; // No need to handle failure here
 }
 
 // Function to write data to output.json
@@ -30,8 +29,6 @@ function writeToOutput(data) {
     }
   });
 }
-
-let results = []; // Array to hold found items
 
 // Watch the input.txt file for changes
 fs.watch('input.txt', (eventType, filename) => {
@@ -51,7 +48,9 @@ fs.watch('input.txt', (eventType, filename) => {
         const trimmedLine = line.trim();
         if (trimmedLine) {
           let foundItem = findItem(trimmedLine);
-          results.push(foundItem);
+          if (foundItem && foundItem.length > 0) {
+            results.push(foundItem); // Push the found items into the results array
+          }
         }
       });
 
